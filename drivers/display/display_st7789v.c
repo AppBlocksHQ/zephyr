@@ -221,7 +221,16 @@ static int st7789v_set_pixel_format(const struct device *dev,
 static int st7789v_set_orientation(const struct device *dev,
 			    const enum display_orientation orientation)
 {
+	uint8_t tmp;
 	if (orientation == DISPLAY_ORIENTATION_NORMAL) {
+		tmp = 0x0;
+		st7789v_transmit(dev, ST7789V_CMD_MADCTL, &tmp, 1);
+		return 0;
+	}
+	if (orientation == DISPLAY_ORIENTATION_ROTATED_90) {
+
+		tmp = (ST7789V_MADCTL_MX_RIGHT_TO_LEFT | ST7789V_MADCTL_MV_REVERSE_MODE | ST7789V_MADCTL_RBG);
+		st7789v_transmit(dev, ST7789V_CMD_MADCTL, &tmp, 1U);
 		return 0;
 	}
 	LOG_ERR("Changing display orientation not implemented");
